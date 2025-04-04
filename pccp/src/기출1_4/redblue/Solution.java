@@ -1,10 +1,13 @@
 package 기출1_4.redblue;
 
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class Solution {
 	public static int solution(int[][] maze) {
+		
 		int n = maze.length;
 		int m = maze[0].length;
 
@@ -15,8 +18,12 @@ public class Solution {
 		int[] temp;
 		int redR = 0;
 		int redC = 0;
+		int newRedR = 0;
+		int newRedC = 0;
 		int blueR = 0;
 		int blueC = 0;
+		int newBlueR = 0;
+		int newBlueC = 0;
 		int cnt;
 
 		for (int i = 0; i < n; i++) {
@@ -52,23 +59,30 @@ public class Solution {
 				break;
 			}
 			
-			for(int d = 0 ; d < 4 ; d++) {
-				redR = temp[0] + dr[d];
-				redC = temp[1] + dc[d];
-				blueR = temp[2] + dr[d];
-				blueC = temp[3] + dc[d];
+			for(int d1 = 0 ; d1 < 4 ; d1++) {
+				int[] nextRC = new int[] {temp[0], temp[1], temp[2], temp[3], cnt + 1};
+
+				newRedR = redR + dr[d1];
+				newRedC = redC + dc[d1];
 				cnt = temp[4];
 				
-				int[] nextRC = new int[] {temp[0], temp[1], temp[2], temp[3], cnt + 1};
-				if(maze[redR][redC] != 3 && redR >= 0 && redR < n && redC >= 0 && redC < m && maze[redR][redC] != 5 && !redVisited[redR][redC]) {
-					redVisited[redR][redC] = true;
-					nextRC[0] = redR;
-					nextRC[1] = redC;
+				if(newRedR >= 0 && newRedR < n && newRedC >= 0 && newRedC < m && newRedR != blueR && newRedC != blueC 
+						&& maze[newRedR][newRedC] != 5 && maze[newRedR][newRedC] != 3 && !redVisited[newRedR][newRedC]) {
+					redVisited[newRedR][newRedC] = true;
+					nextRC[0] = newRedR;
+					nextRC[1] = newRedC;
 				}
-				if(maze[blueR][blueC] != 4 && blueR >= 0 && blueR < n && blueC >= 0 && blueC < m && maze[blueR][blueC] != 5 && !blueVisited[blueR][blueC]) {
-					blueVisited[blueR][blueC] = true;
-					nextRC[2] = blueR;
-					nextRC[3] = blueC;
+				
+				for(int d2 = 0 ; d2 < 4 ; d2++) {
+					newBlueR = blueR + dr[d2];
+					newBlueC = blueC + dc[d2];
+					
+					if(newBlueR >= 0 && newBlueR < n && newBlueC >= 0 && newBlueC < m && newBlueR != newRedR && newBlueC != newRedC
+							&& maze[newBlueR][newBlueC] != 5 && maze[newBlueR][newBlueC] != 4 && !blueVisited[newBlueR][newBlueC]) {
+						blueVisited[newBlueR][newBlueC] = true;
+						nextRC[2] = newBlueR;
+						nextRC[3] = newBlueC;
+					}
 				}
 				que.add(nextRC);
 			}
